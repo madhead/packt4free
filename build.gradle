@@ -72,3 +72,8 @@ bintray {
 		into '.'
 	}
 }
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '4.0'
+	distributionType = Wrapper.DistributionType.ALL
+}
