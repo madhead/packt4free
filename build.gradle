@@ -58,7 +58,7 @@ bintray {
 	publish = true
 
 	pkg {
-		repo = 'madhead'
+		repo = 'applications'
 		name = 'packt4free'
 		websiteUrl = 'https://github.com/madhead/packt4free'
 		issueTrackerUrl = 'https://github.com/madhead/packt4free/issues'
