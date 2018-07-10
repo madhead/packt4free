@@ -20,7 +20,7 @@ class DealOfTheDayTest {
 
 	@Test
 	@DisplayName("title must not be blank")
-	fun hello() {
+	fun `title must not be blank`() {
 		logger.info("DotD title: {}", dealOfTheDay.title)
 		Assertions.assertFalse(dealOfTheDay.title.isBlank())
 	}

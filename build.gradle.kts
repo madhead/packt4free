@@ -37,6 +37,10 @@ val shadowJar by tasks.getting(ShadowJar::class) {
 
 val test by tasks.getting(Test::class) {
 	useJUnitPlatform()
+
+	testLogging {
+		showStandardStreams = true
+	}
 }
 
 task<Wrapper>("wrapper") {

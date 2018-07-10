@@ -1,0 +1,3 @@
+= GitLab CI/CD
+
+This directory contains GitLab CI/CD configuration files and related scripts.
