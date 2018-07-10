@@ -11,6 +11,6 @@ class Handler : RequestHandler<ScheduledEvent, Unit> {
 	}
 
 	override fun handleRequest(input: ScheduledEvent, context: Context) {
-		logger.info("Got request: ${input}")
+		logger.info("DotD: ${dealOfTheDay().title}")
 	}
 }
