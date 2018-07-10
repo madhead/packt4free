@@ -1,0 +1,19 @@
+stages:
+  - test
+
+# TODO: Move to `variables` section when possible
+# https://gitlab.com/gitlab-org/gitlab-runner/issues/1809
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+# Run unit tests.
+# Actually, unit tests parse https://www.packtpub.com/packt/offers/free-learning, so it is not "true" unit tests.
+unit:
+  stage:       test
+  image:       openjdk:8
+  script:
+    - ./gradlew clean test
+  cache:
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
