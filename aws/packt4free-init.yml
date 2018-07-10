@@ -1,0 +1,30 @@
+# Run this stack once when you set up packt4free.
+# It will create an S3 bucket to be used later by CI/CD jobs to upload Lambda code.
+
+Resources:
+  'bucket':
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName:
+        Fn::Sub:
+          - 'packt4free-lambda-code-${region}'
+          - region: !Ref AWS::Region
+  'user':
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: 'gitlab@packt4free'
+      Policies:
+        - PolicyName:
+            Fn::Sub:
+              - 'Upload@${bucket}'
+              - bucket: !Ref bucket
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Effect: 'Allow'
+              Action:
+                - 's3:PutObject'
+              Resource:
+                Fn::Sub:
+                  - '${bucket}/*'
+                  - bucket: !GetAtt bucket.Arn

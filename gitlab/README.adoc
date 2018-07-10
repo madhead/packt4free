@@ -1,3 +1,25 @@
 = GitLab CI/CD
 
 This directory contains GitLab CI/CD configuration files and related scripts.
+
+== Configuration
+
+=== Enabling CI / CD
+
+First thing to do is to enable pipelines:
+
+ . Make sure CI / CD is enabled for the project in GitLab
+ . Go to the repository settings
+ . Go to the "CI / CD Settings" section
+ . Expand "General pipelines" section
+ . Input `gitlab/gitlab-ci.yml` in "Custom CI config path" field
+
+You're done, CI / CD is enabled!
+
+=== Initializing AWS infrastructure
+
+Refer to link:../aws[Project initialization] section from AWS docs for this project.
+
+=== Configuring CI / CD secrets
+
+TBD

@@ -1,0 +1,25 @@
+= AWS
+
+This directory contains https://aws.amazon.com/cloudformation[CloudFormation] https://aws.amazon.com/cloudformation/aws-cloudformation-templates[templates].
+
+== Project initialization
+
+Once per project lifecycle you should init it.
+This includes:
+
+ . Creating S3 bucket that will be used to deploy Lambda JARs
+ . Creating IAM user for CI/CD purposes
+
+In order to create all that entities, just run
+
+[source,bash]
+----
+aws cloudformation deploy \                  # <1>
+    --template-file packt4free-init.yml \    # <2>
+    --stack-name packt4free-init \           # <3>
+    --capabilities CAPABILITY_NAMED_IAM      # <4>
+----
+<1> https://docs.aws.amazon.com/cli/latest/reference/cloudformation/deploy/index.html[Deploy] a template using currently active AWS profile & region
+<2> A template to deploy
+<3> A stack name, seen and referenced later
+<4> `CAPABILITY_NAMED_IAM` https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-username[is needed] to create named IAM users
