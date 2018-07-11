@@ -8,6 +8,13 @@ Resources:
         Fn::Sub:
           - 'packt4free-lambda-code-${region}'
           - region: !Ref AWS::Region
+      LifecycleConfiguration:
+        Rules:
+          - Id: 'Cleanup'
+            Status: 'Enabled'
+            ExpirationInDays: 1
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
   # Creates an IAM user for CI / CD
   'user':
     Type: 'AWS::IAM::User'
