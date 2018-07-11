@@ -9,6 +9,7 @@ This includes:
 
  . Creating S3 bucket that will be used to deploy Lambda JARs
  . Creating IAM user for CI/CD purposes
+ . Creating IAM access keys for the user
 
 In order to create all that entities, just run
 
@@ -23,3 +24,11 @@ aws cloudformation deploy \                  # <1>
 <2> A template to deploy
 <3> A stack name, seen and referenced later
 <4> `CAPABILITY_NAMED_IAM` https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-username[is needed] to create named IAM users
+
+`packt4free-init.yml` template outputs some useful variables:
+
+ . `awsRegion`: Region where the stack was created
+ . `awsAccessKeyId`: AWS access key ID to be used in CI / CD
+ . `awsSecretAccessKey`: AWS secret key to be used in CI / CD
+
+Outputting keys is definitely not secure, but very convenient for CI / CD configuration.
