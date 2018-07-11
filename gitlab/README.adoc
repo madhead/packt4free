@@ -1,3 +1,32 @@
 = GitLab CI/CD
 
 This directory contains GitLab CI/CD configuration files and related scripts.
+
+== Configuration
+
+=== Enabling CI / CD
+
+First thing to do is to enable pipelines:
+
+ . Make sure CI / CD is enabled for the project in GitLab
+ . Go to the repository settings
+ . Go to the "CI / CD Settings" section
+ . Expand "General pipelines" section
+ . Input `gitlab/gitlab-ci.yml` in "Custom CI config path" field
+
+You're done, CI / CD is enabled!
+
+=== Initializing AWS infrastructure
+
+Refer to link:../aws[Project initialization] section from AWS docs for this project.
+
+=== Configuring CI / CD secrets
+
+After the AWS infrastructure is initialized with CloudFormation it outputs some values & secrets needed for CI / CD:
+
+ . `awsRegion`: Save this value as `AWS_REGION` variable in "CI / CD Settings"
+ . `awsAccessKeyId`: Save this value as `AWS_ACCESS_KEY_ID` variable in "CI / CD Settings"
+ . `awsSecretAccessKey`: Save this value as `AWS_SECRET_ACCESS_KEY` variable in "CI / CD Settings"
+ . `artifactsBucket`: Save this value as `ARTIFACTS_BUCKET` variable in "CI / CD Settings"
+
+Make sure to mark variables holding sensitive data as "Protected"

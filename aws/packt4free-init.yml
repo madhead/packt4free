@@ -1,0 +1,50 @@
+# Run this stack once when you set up packt4free.
+Resources:
+  # Creates an S3 bucket to upload artifacts to
+  'bucket':
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName:
+        Fn::Sub:
+          - 'packt4free-lambda-code-${region}'
+          - region: !Ref AWS::Region
+  # Creates an IAM user for CI / CD
+  'user':
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: 'gitlab@packt4free'
+      Policies:
+        - PolicyName:
+            Fn::Sub:
+              - 'Upload@${bucket}'
+              - bucket: !Ref bucket
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Effect: 'Allow'
+              Action:
+                - 's3:PutObject'
+              Resource:
+                Fn::Sub:
+                  - '${bucket}/*'
+                  - bucket: !GetAtt bucket.Arn
+  # Creates access keys to be used to operate on behalf of the user
+  'apiKeys':
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref user
+Outputs:
+  # Outputting keys is definitely not secure, but very convenient for CI / CD configuration.
+  awsAccessKeyId:
+    Description: AWS access key
+    Value: !Ref apiKeys
+  # Outputting keys is definitely not secure, but very convenient for CI / CD configuration.
+  awsSecretAccessKey:
+    Description: AWS secret key
+    Value: !GetAtt apiKeys.SecretAccessKey
+  awsRegion:
+    Description: AWS region
+    Value: !Ref AWS::Region
+  artifactsBucket:
+    Description: Artifacts bucket
+    Value: !Ref bucket
