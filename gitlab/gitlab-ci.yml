@@ -1,8 +1,9 @@
 stages:
   - build
   - test
+  - upload
 
-# TODO: Move to `variables` section when possible
+# TODO: Move to `variables` section when possible.
 # https://gitlab.com/gitlab-org/gitlab-runner/issues/1809
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -18,12 +19,11 @@ jar:
     paths:
       - .gradle/wrapper
       - .gradle/caches
-      - build
+      - build # Actually, caching build does not work because of files' access / modification time. Probably will be working one day.
   artifacts:
     paths:
       - build/libs/packt4free-all.jar
     expire_in: 1 hour
-
 
 # Run unit tests.
 # Actually, unit tests parse https://www.packtpub.com/packt/offers/free-learning, so it is not "true" unit tests.
@@ -36,5 +36,16 @@ unit:
     paths:
       - .gradle/wrapper
       - .gradle/caches
-      - build
+      - build # Actually, caching build does not work because of files' access / modification time. Probably will be working one day.
 
+# Upload fat JAR to S3.
+s3:
+  stage: upload
+  image:
+    name: nbrown/aws-cli:latest
+    entrypoint:
+      - ''
+  script:
+    - aws s3 cp build/libs/packt4free-all.jar s3://${ARTIFACTS_BUCKET}/${CI_COMMIT_SHA}.jar
+  only:
+    - master
