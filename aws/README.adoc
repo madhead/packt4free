@@ -30,5 +30,6 @@ aws cloudformation deploy \                  # <1>
  . `awsRegion`: Region where the stack was created
  . `awsAccessKeyId`: AWS access key ID to be used in CI / CD
  . `awsSecretAccessKey`: AWS secret key to be used in CI / CD
+ . `artifactsBucket`: S3 bucket to be used in CI / CD
 
 Outputting keys is definitely not secure, but very convenient for CI / CD configuration.

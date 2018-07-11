@@ -45,3 +45,6 @@ Outputs:
   awsRegion:
     Description: AWS region
     Value: !Ref AWS::Region
+  artifactsBucket:
+    Description: Artifacts bucket
+    Value: !Ref bucket
