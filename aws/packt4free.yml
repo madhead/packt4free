@@ -1,0 +1,80 @@
+---
+# This template is run on every CI / CD deployment
+Parameters:
+  sha1:
+    Type: String
+Resources:
+  # Creates an IAM role that Lambda will run on behalf of
+  'role':
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'packt4freeRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'packt4freeLambda@CloudWatch'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                Resource:
+                  Fn::Sub:
+                    - 'arn:aws:logs:${region}:${account}:*'
+                    - region: !Ref AWS::Region
+                      account: !Ref AWS::AccountId
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource:
+                  Fn::Sub:
+                    - 'arn:aws:logs:${region}:${account}:log-group:/aws/lambda/packt4free:*'
+                    - region: !Ref AWS::Region
+                      account: !Ref AWS::AccountId
+  # Creates the Lambda itself
+  'lambda':
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: 'packt4free'
+      Runtime: 'java8'
+      Environment:
+        Variables:
+          PAGE_PARSE_TIMEOUT: '1000'
+      Timeout: 10
+      MemorySize: 128
+      Code:
+        S3Bucket: !ImportValue packt4freeBucket
+        S3Key:
+          Fn::Sub:
+            - '${sha1}.jar'
+            - sha1: !Ref sha1
+      Handler: 'by.dev.madhead.packt4free.Handler'
+      Role: !GetAtt role.Arn
+  # Creates CloudWatch schedule
+  'rule':
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Name: 'packt4freeRule'
+      Description: 'Triggers packt4free emails'
+      ScheduleExpression: 'cron(* * * * ? *)'
+      State: 'ENABLED'
+      Targets:
+        - Arn: !GetAtt lambda.Arn
+          Id: 'packt4freeRuleTarget'
+  # Gives the Rule a permission to invoke the Lambda
+  'lambdaInvokePermission':
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !GetAtt lambda.Arn
+      Principal: 'events.amazonaws.com'
+      SourceArn: !GetAtt rule.Arn
