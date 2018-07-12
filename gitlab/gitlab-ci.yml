@@ -16,6 +16,7 @@ jar:
   script:
     - ./gradlew shadowJar
   cache:
+    key:       $CI_JOB_NAME
     paths:
       - .gradle/wrapper
       - .gradle/caches
@@ -34,6 +35,7 @@ unit:
   script:
     - ./gradlew test
   cache:
+    key:       $CI_JOB_NAME
     paths:
       - .gradle/wrapper
       - .gradle/caches
