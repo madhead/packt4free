@@ -1,8 +1,0 @@
-Resources:
-  packt4free:
-    Type: 'AWS::Events::Rule'
-    Properties:
-      Name: 'packt4free'
-      Description: 'Triggers packt4free emails'
-      ScheduleExpression: 'cron(10 1 * * ? *)'
-      State: 'ENABLED'

@@ -8,7 +8,7 @@ Once per project lifecycle you should init it.
 This includes:
 
  . Creating S3 bucket that will be used to deploy Lambda JARs
- . Creating IAM user for CI/CD purposes
+ . Creating IAM user for CI/CD purposes with a very limited access
  . Creating IAM access keys for the user
 
 In order to create all that entities, just run

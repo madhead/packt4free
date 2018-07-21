@@ -24,7 +24,7 @@ Refer to link:../aws[Project initialization] section from AWS docs for this proj
 
 After the AWS infrastructure is initialized with CloudFormation it outputs some values & secrets needed for CI / CD:
 
- . `awsRegion`: Save this value as `AWS_REGION` variable in "CI / CD Settings"
+ . `awsRegion`: Save this value as `AWS_DEFAULT_REGION` variable in "CI / CD Settings"
  . `awsAccessKeyId`: Save this value as `AWS_ACCESS_KEY_ID` variable in "CI / CD Settings"
  . `awsSecretAccessKey`: Save this value as `AWS_SECRET_ACCESS_KEY` variable in "CI / CD Settings"
  . `artifactsBucket`: Save this value as `ARTIFACTS_BUCKET` variable in "CI / CD Settings"
