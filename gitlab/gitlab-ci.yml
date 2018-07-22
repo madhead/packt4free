@@ -1,8 +1,33 @@
 stages:
+  - lint
   - build
   - test
   - upload
   - deploy
+
+# Check if logo.png in the root of the repo corresponds to the content of assets/src/logo.svg.
+logo:
+  stage:         lint
+  image:         madhead/imagemagick
+  script:
+    - convert -background none -density 300 -resize 128x128 src/main/assets/logo.svg logo.check.png
+    - magick compare -verbose -metric ae logo.png logo.check.png diff.png
+  artifacts:
+    name:        $CI_COMMIT_SHA-$CI_JOB_NAME
+    paths:
+      - diff.png
+    expire_in:   1 hour
+    when:        on_failure
+
+# Validate CloudFormation template.
+logo:
+  stage:         lint
+  image:
+    name:        nbrown/aws-cli:latest
+    entrypoint:
+      - ''
+  script:
+    - aws cloudformation validate-template --template-body file://./aws/packt4free.yml
 
 # Build the JAR.
 jar:
@@ -45,20 +70,6 @@ unit:
       - .gradle/wrapper
       - .gradle/caches
       - build # Actually, caching build does not work because of files' access / modification time. Probably will be working one day.
-
-# Check if logo.png in the root of the repo corresponds to the content of assets/src/logo.svg.
-logo:
-  stage:         test
-  image:         madhead/imagemagick
-  script:
-    - convert -background none -density 300 -resize 128x128 src/main/assets/logo.svg logo.check.png
-    - magick compare -verbose -metric ae logo.png logo.check.png diff.png
-  artifacts:
-    name:        $CI_COMMIT_SHA-$CI_JOB_NAME
-    paths:
-      - diff.png
-    expire_in:   1 hour
-    when:        on_failure
 
 # Upload fat JAR to S3.
 s3:

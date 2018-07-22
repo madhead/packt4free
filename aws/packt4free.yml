@@ -1,7 +1,7 @@
 ---
 # This template is run on every CI / CD deployment
 Parameters:
-  sha1:
+  DRAKE_EMPIRE:
     Type: String
 Resources:
   # Creates an IAM role that Lambda will run on behalf of
