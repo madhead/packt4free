@@ -27,6 +27,7 @@ dependencies {
 
 	implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
 	implementation("com.amazonaws:aws-lambda-java-events:2.1.0")
+	implementation("com.amazonaws:aws-java-sdk-ses:1.11.372")
 
 	implementation("org.jsoup:jsoup:1.11.3")
 
