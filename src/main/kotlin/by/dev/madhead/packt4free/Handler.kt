@@ -13,8 +13,7 @@ class Handler : RequestHandler<ScheduledEvent, Unit> {
 	}
 
 	override fun handleRequest(input: ScheduledEvent, context: Context) {
-		logger.info("test")
-
+		val dealOfTheDay = Packt().dealOfTheDay()
 		val simpleEmailService = AmazonSimpleEmailServiceClientBuilder
 			.defaultClient()
 
@@ -23,11 +22,15 @@ class Handler : RequestHandler<ScheduledEvent, Unit> {
 				.withDestination(Destination().withToAddresses(System.getenv("EMAIL_TO")!!))
 				.withSource(System.getenv("EMAIL_FROM")!!)
 				.withMessage(Message()
-					.withSubject(Content().withCharset("UTF-8").withData("TEST"))
-					.withBody(Body().withText(Content().withCharset("UTF-8").withData("TEST")))
+					.withSubject(Content().withCharset("UTF-8").withData("Packt free eBook @ 07/19/2018: ${dealOfTheDay.title}"))
+					.withBody(Body().withHtml(Content().withCharset("UTF-8").withData(
+						"""
+							<img src="${dealOfTheDay.coverImage}"/>
+							<br/>
+							<a href="${dealOfTheDay.link}">Claim now!</a>
+						""".trimIndent()
+					)))
 				)
 		)
-
-		logger.info("email sent")
 	}
 }
