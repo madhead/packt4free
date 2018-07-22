@@ -14,26 +14,45 @@ class Handler : RequestHandler<ScheduledEvent, Unit> {
 	}
 
 	override fun handleRequest(input: ScheduledEvent, context: Context) {
-		val dealOfTheDay = AWSXRay.beginSegment("Parse Packt").use {
-			Packt().dealOfTheDay()
-		}
-		val simpleEmailService = AmazonSimpleEmailServiceClientBuilder
-			.defaultClient()
+		val parsePacktSegment = AWSXRay.beginSubsegment("Parse Packt")
 
-		simpleEmailService.sendEmail(
-			SendEmailRequest()
-				.withDestination(Destination().withToAddresses(System.getenv("EMAIL_TO")!!))
-				.withSource(System.getenv("EMAIL_FROM")!!)
-				.withMessage(Message()
-					.withSubject(Content().withCharset("UTF-8").withData("Packt free eBook @ 07/19/2018: ${dealOfTheDay.title}"))
-					.withBody(Body().withHtml(Content().withCharset("UTF-8").withData(
-						"""
+		val dealOfTheDay = try {
+			Packt().dealOfTheDay()
+		} catch (e: Throwable) {
+			parsePacktSegment.addException(e)
+
+			throw e
+		} finally {
+			parsePacktSegment.close()
+		}
+
+		val sendEmailSegment = AWSXRay.beginSubsegment("Send Email")
+
+		try {
+			val simpleEmailService = AmazonSimpleEmailServiceClientBuilder
+				.defaultClient()
+
+			simpleEmailService.sendEmail(
+				SendEmailRequest()
+					.withDestination(Destination().withToAddresses(System.getenv("EMAIL_TO")!!))
+					.withSource(System.getenv("EMAIL_FROM")!!)
+					.withMessage(Message()
+						.withSubject(Content().withCharset("UTF-8").withData("Packt free eBook @ 07/19/2018: ${dealOfTheDay.title}"))
+						.withBody(Body().withHtml(Content().withCharset("UTF-8").withData(
+							"""
 							<img src="${dealOfTheDay.coverImage}"/>
 							<br/>
 							<a href="${dealOfTheDay.link}">Claim now!</a>
 						""".trimIndent()
-					)))
-				)
-		)
+						)))
+					)
+			)
+		} catch (e: Throwable) {
+			sendEmailSegment.addException(e)
+
+			throw e
+		} finally {
+			sendEmailSegment.close()
+		}
 	}
 }

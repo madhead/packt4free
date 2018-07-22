@@ -75,6 +75,8 @@ Resources:
             - sha1: !Ref sha1
       Handler: 'by.dev.madhead.packt4free.Handler'
       Role: !GetAtt role.Arn
+      TracingConfig:
+        Mode: Active
   # Creates CloudWatch schedule
   'rule':
     Type: 'AWS::Events::Rule'
