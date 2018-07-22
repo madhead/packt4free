@@ -40,6 +40,18 @@ Resources:
                     - 'arn:aws:logs:${region}:${account}:log-group:/aws/lambda/packt4free:*'
                     - region: !Ref AWS::Region
                       account: !Ref AWS::AccountId
+        - PolicyName: 'packt4freeLambda@SES'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'ses:SendEmail'
+                Resource:
+                  Fn::Sub:
+                    - 'arn:aws:ses:${region}:${account}:identity/siarhei.krukau@gmail.com'
+                    - region: !Ref AWS::Region
+                      account: !Ref AWS::AccountId
   # Creates the Lambda itself
   'lambda':
     Type: 'AWS::Lambda::Function'
@@ -49,8 +61,10 @@ Resources:
       Environment:
         Variables:
           PAGE_PARSE_TIMEOUT: '1000'
-      Timeout: 10
-      MemorySize: 128
+          EMAIL_TO: 'siarhei.krukau@gmail.com'
+          EMAIL_FROM: 'siarhei.krukau@gmail.com'
+      Timeout: 30
+      MemorySize: 320
       Code:
         S3Bucket: !ImportValue packt4freeBucket
         S3Key:
@@ -65,7 +79,7 @@ Resources:
     Properties:
       Name: 'packt4freeRule'
       Description: 'Triggers packt4free emails'
-      ScheduleExpression: 'cron(* * * * ? *)'
+      ScheduleExpression: 'cron(0 * * * ? *)'
       State: 'ENABLED'
       Targets:
         - Arn: !GetAtt lambda.Arn
