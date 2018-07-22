@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.ScheduledEvent
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder
 import com.amazonaws.services.simpleemail.model.*
+import com.amazonaws.xray.AWSXRay
 import org.apache.logging.log4j.LogManager
 
 class Handler : RequestHandler<ScheduledEvent, Unit> {
@@ -13,7 +14,9 @@ class Handler : RequestHandler<ScheduledEvent, Unit> {
 	}
 
 	override fun handleRequest(input: ScheduledEvent, context: Context) {
-		val dealOfTheDay = Packt().dealOfTheDay()
+		val dealOfTheDay = AWSXRay.beginSegment("Parse Packt").use {
+			Packt().dealOfTheDay()
+		}
 		val simpleEmailService = AmazonSimpleEmailServiceClientBuilder
 			.defaultClient()
 
