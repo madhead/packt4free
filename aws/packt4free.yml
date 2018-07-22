@@ -60,7 +60,7 @@ Resources:
       Runtime: 'java8'
       Environment:
         Variables:
-          PAGE_PARSE_TIMEOUT: '1000'
+          PAGE_PARSE_TIMEOUT: '10000'
           EMAIL_TO: 'siarhei.krukau@gmail.com'
           EMAIL_FROM: 'siarhei.krukau@gmail.com'
       Timeout: 30
