@@ -28,6 +28,10 @@ dependencies {
 	implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
 	implementation("com.amazonaws:aws-lambda-java-events:2.1.0")
 	implementation("com.amazonaws:aws-java-sdk-ses:1.11.372")
+	implementation("com.amazonaws:aws-xray-recorder-sdk-bom:1.3.1")
+	implementation("com.amazonaws:aws-xray-recorder-sdk-core")
+	implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk")
+	implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-instrumentor")
 
 	implementation("org.jsoup:jsoup:1.11.3")
 

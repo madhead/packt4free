@@ -81,6 +81,7 @@ Resources:
                   - 'iam:CreateRole'
                   - 'iam:PutRolePolicy'
                   - 'iam:DeleteRolePolicy'
+                  - 'iam:AttachRolePolicy'
                   - 'iam:PassRole'
                 Resource:
                   Fn::Sub:

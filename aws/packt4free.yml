@@ -52,6 +52,8 @@ Resources:
                     - 'arn:aws:ses:${region}:${account}:identity/siarhei.krukau@gmail.com'
                     - region: !Ref AWS::Region
                       account: !Ref AWS::AccountId
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'
   # Creates the Lambda itself
   'lambda':
     Type: 'AWS::Lambda::Function'
