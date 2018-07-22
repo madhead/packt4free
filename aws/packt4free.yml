@@ -81,7 +81,7 @@ Resources:
     Properties:
       Name: 'packt4freeRule'
       Description: 'Triggers packt4free emails'
-      ScheduleExpression: 'cron(0 * * * ? *)'
+      ScheduleExpression: 'cron(0 1 * * ? *)'
       State: 'ENABLED'
       Targets:
         - Arn: !GetAtt lambda.Arn
