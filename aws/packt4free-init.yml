@@ -3,46 +3,46 @@
 Resources:
   # Creates an S3 bucket to upload artifacts to
   'bucket':
-    Type: 'AWS::S3::Bucket'
+    Type:                                   'AWS::S3::Bucket'
     Properties:
       BucketName:
         Fn::Sub:
           - 'packt4free-lambda-code-${region}'
-          - region: !Ref AWS::Region
+          - region:                         !Ref AWS::Region
       LifecycleConfiguration:
         Rules:
-          - Id: 'Cleanup'
-            Status: 'Enabled'
-            ExpirationInDays: 1
+          - Id:                             'Cleanup'
+            Status:                         'Enabled'
+            ExpirationInDays:               1
             AbortIncompleteMultipartUpload:
-              DaysAfterInitiation: 1
+              DaysAfterInitiation:          1
   # Creates an IAM user for CI / CD with a very limited access
   'user':
-    Type: 'AWS::IAM::User'
+    Type:                                   'AWS::IAM::User'
     Properties:
-      UserName: 'gitlab@packt4free'
+      UserName:                             'gitlab@packt4free'
       Policies:
-        - PolicyName: 'gitlab@packt4free@S3'
+        - PolicyName:                       'gitlab@packt4free@S3'
           PolicyDocument:
-            Version: '2012-10-17'
+            Version:                        '2012-10-17'
             Statement:
-              Effect: 'Allow'
+              Effect:                       'Allow'
               Action:
                 - 's3:GetObject'
                 - 's3:PutObject'
               Resource:
                 Fn::Sub:
                   - '${bucket}/*'
-                  - bucket: !GetAtt bucket.Arn
-        - PolicyName: 'gitlab@packt4free@CloudFormation'
+                  - bucket:                 !GetAtt bucket.Arn
+        - PolicyName:                       'gitlab@packt4free@CloudFormation'
           PolicyDocument:
-            Version: '2012-10-17'
+            Version:                        '2012-10-17'
             Statement:
-              - Effect: 'Allow'
+              - Effect:                     'Allow'
                 Action:
                   - 'cloudformation:GetTemplateSummary'
-                Resource: '*'
-              - Effect: 'Allow'
+                Resource:                   '*'
+              - Effect:                     'Allow'
                 Action:
                   - 'cloudformation:DescribeStacks'
                   - 'cloudformation:DescribeChangeSet'
@@ -51,17 +51,17 @@ Resources:
                 Resource:
                   Fn::Sub:
                     - 'arn:aws:cloudformation:${region}:${account}:stack/packt4free/*'
-                    - region: !Ref AWS::Region
-                      account: !Ref AWS::AccountId
-        - PolicyName: 'gitlab@packt4free@Events'
+                    - region:               !Ref AWS::Region
+                      account:              !Ref AWS::AccountId
+        - PolicyName:                       'gitlab@packt4free@Events'
           PolicyDocument:
-            Version: '2012-10-17'
+            Version:                        '2012-10-17'
             Statement:
-              - Effect: 'Allow'
+              - Effect:                     'Allow'
                 Action:
                   - 'events:PutRule'
-                Resource: '*'
-              - Effect: 'Allow'
+                Resource:                   '*'
+              - Effect:                     'Allow'
                 Action:
                   - 'events:DescribeRule'
                   - 'events:PutTargets'
@@ -69,13 +69,13 @@ Resources:
                 Resource:
                   Fn::Sub:
                     - 'arn:aws:events:${region}:${account}:rule/packt4freeRule'
-                    - region: !Ref AWS::Region
-                      account: !Ref AWS::AccountId
-        - PolicyName: 'gitlab@packt4free@IAM'
+                    - region:               !Ref AWS::Region
+                      account:              !Ref AWS::AccountId
+        - PolicyName:                       'gitlab@packt4free@IAM'
           PolicyDocument:
-            Version: '2012-10-17'
+            Version:                        '2012-10-17'
             Statement:
-              - Effect: 'Allow'
+              - Effect:                     'Allow'
                 Action:
                   - 'iam:GetRole'
                   - 'iam:CreateRole'
@@ -86,12 +86,12 @@ Resources:
                 Resource:
                   Fn::Sub:
                     - 'arn:aws:iam::${account}:role/packt4freeRole'
-                    - account: !Ref AWS::AccountId
-        - PolicyName: 'gitlab@packt4free@Lambda'
+                    - account:              !Ref AWS::AccountId
+        - PolicyName:                       'gitlab@packt4free@Lambda'
           PolicyDocument:
-            Version: '2012-10-17'
+            Version:                        '2012-10-17'
             Statement:
-              - Effect: 'Allow'
+              - Effect:                     'Allow'
                 Action:
                   - 'lambda:GetFunction'
                   - 'lambda:CreateFunction'
@@ -102,27 +102,27 @@ Resources:
                 Resource:
                   Fn::Sub:
                     - 'arn:aws:lambda:${region}:${account}:function:packt4free'
-                    - region: !Ref AWS::Region
-                      account: !Ref AWS::AccountId
+                    - region:               !Ref AWS::Region
+                      account:              !Ref AWS::AccountId
   # Creates access keys to be used to operate on behalf of the user
   'apiKeys':
-    Type: 'AWS::IAM::AccessKey'
+    Type:                                   'AWS::IAM::AccessKey'
     Properties:
-      UserName: !Ref user
+      UserName:                             !Ref user
 Outputs:
   # Outputting keys is definitely not secure, but very convenient for CI / CD configuration.
   awsAccessKeyId:
-    Description: 'AWS access key'
-    Value: !Ref apiKeys
+    Description:                            'AWS access key'
+    Value:                                  !Ref apiKeys
   # Outputting keys is definitely not secure, but very convenient for CI / CD configuration.
   awsSecretAccessKey:
-    Description: 'AWS secret key'
-    Value: !GetAtt apiKeys.SecretAccessKey
+    Description:                            'AWS secret key'
+    Value:                                  !GetAtt apiKeys.SecretAccessKey
   awsRegion:
-    Description: 'AWS region'
-    Value: !Ref AWS::Region
+    Description:                            'AWS region'
+    Value:                                  !Ref AWS::Region
   artifactsBucket:
-    Description: 'Artifacts bucket'
-    Value: !Ref bucket
+    Description:                            'Artifacts bucket'
+    Value:                                  !Ref bucket
     Export:
-      Name: 'packt4freeBucket'
+      Name:                                 'packt4freeBucket'
