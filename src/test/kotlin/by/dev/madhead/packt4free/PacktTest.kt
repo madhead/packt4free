@@ -3,9 +3,11 @@ package by.dev.madhead.packt4free
 import org.apache.logging.log4j.LogManager
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
+@Disabled
 class PacktTest {
 	companion object {
 		val logger = LogManager.getLogger(PacktTest::class.java)!!

@@ -2,8 +2,6 @@
 stages:
   - build
   - test
-  - upload
-  - deploy
 
 # Build the JAR.
 jar:
@@ -54,35 +52,10 @@ logo:
   script:
     - convert -background none -density 300 -resize 128x128 src/main/assets/logo.svg logo.check.png
     - magick compare -verbose -metric ae logo.png logo.check.png diff.png
+  allow_failure: true
   artifacts:
     name:        $CI_COMMIT_SHA-$CI_JOB_NAME
     paths:
       - diff.png
     expire_in:   1 hour
     when:        on_failure
-
-# Upload fat JAR to S3.
-s3:
-  stage:         upload
-  image:
-    name:        nbrown/aws-cli:latest
-    entrypoint:
-      - ''
-  script:
-    - aws s3 cp build/libs/packt4free-all.jar s3://${ARTIFACTS_BUCKET}/${CI_COMMIT_SHA}.jar
-  only:
-    - master
-
-# Deploy Lambda.
-deploy:
-  stage:         deploy
-  image:
-    name:        nbrown/aws-cli:latest
-    entrypoint:
-      - ''
-  script:
-    - aws cloudformation deploy --template-file aws/packt4free.yml --stack-name packt4free --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides "sha1=${CI_COMMIT_SHA}"
-  environment:
-    name:        production
-  only:
-    - master
